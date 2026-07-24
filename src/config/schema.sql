@@ -76,10 +76,15 @@ CREATE TABLE IF NOT EXISTS productos (
 CREATE TABLE IF NOT EXISTS toppings (
   id          SERIAL PRIMARY KEY,
   nombre      VARCHAR(100) NOT NULL UNIQUE,
-  precio      NUMERIC(10,2) DEFAULT 0,
+  productos_ids JSONB      DEFAULT '[]',
   estado      VARCHAR(20)  NOT NULL DEFAULT 'Activo',
   created_at  TIMESTAMP DEFAULT NOW()
 );
+-- Migración segura: los toppings nunca tienen costo (se eliminó la
+-- columna precio) y ahora se pueden asociar a productos específicos.
+-- productos_ids = '[]' significa "aplica a todos los productos".
+ALTER TABLE toppings DROP COLUMN IF EXISTS precio;
+ALTER TABLE toppings ADD COLUMN IF NOT EXISTS productos_ids JSONB DEFAULT '[]';
 
 CREATE TABLE IF NOT EXISTS adiciones (
   id          SERIAL PRIMARY KEY,

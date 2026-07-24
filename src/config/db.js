@@ -51,6 +51,11 @@ const migrar = async () => {
     `ALTER TABLE ventas ALTER COLUMN estado SET DEFAULT 'vendido'`,
     `UPDATE ventas SET estado='vendido'  WHERE estado='Activa'`,
     `UPDATE ventas SET estado='devuelto' WHERE estado IN ('Anulada','Inactiva')`,
+    // toppings: nunca tienen costo (se quita precio) y ahora se pueden
+    // asociar a productos específicos. productos_ids = [] significa
+    // "aplica a todos los productos".
+    `ALTER TABLE toppings DROP COLUMN IF EXISTS precio`,
+    `ALTER TABLE toppings ADD COLUMN IF NOT EXISTS productos_ids JSONB DEFAULT '[]'`,
   ];
   for (const sql of alters) {
     try { await pool.query(sql); }

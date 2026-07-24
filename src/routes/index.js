@@ -233,7 +233,9 @@ prodRouter.delete('/:id', auth, async (req, res) => {
 r.use('/productos', prodRouter);
 
 // ── TOPPINGS ───────────────────────────────────────────────
-r.use('/toppings',  crud('toppings',  ['nombre', 'precio', 'estado']));
+// Los toppings nunca tienen costo (sin campo precio). productos_ids
+// = [] significa que el topping aplica a todos los productos.
+r.use('/toppings',  crud('toppings',  ['nombre', 'productos_ids', 'estado']));
 
 // ── ADICIONES ──────────────────────────────────────────────
 r.use('/adiciones', crud('adiciones', ['nombre', 'precio', 'estado']));
